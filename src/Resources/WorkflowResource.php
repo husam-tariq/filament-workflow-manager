@@ -21,6 +21,16 @@ class WorkflowResource extends Resource
 
     protected static ?string $model = Workflow::class;
 
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament-workflow-manager::filament-workflow-manager.resources.title');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament-workflow-manager::filament-workflow-manager.resources.title');
+    }
+
     protected static function getNavigationIcon(): string
     {
         return config('filament-workflow-manager.navigation_icon') ?? 'heroicon-o-collection';
