@@ -64,7 +64,6 @@ trait InteractsWithWorkflows
         return collect();
     }
 
-
     public function getWorkflowStatusIdAttribute()
     {
         return $this->workflow_status?->status?->id;
@@ -81,4 +80,5 @@ trait InteractsWithWorkflows
             ]);
         }
     }
+
 }
