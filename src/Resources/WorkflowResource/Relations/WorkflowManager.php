@@ -4,6 +4,7 @@ namespace Heloufir\FilamentWorkflowManager\Resources\WorkflowResource\Relations;
 
 use Filament\Resources\RelationManagers\RelationManager;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowModel;
+use Heloufir\FilamentWorkflowManager\Models\WorkflowStatus;
 
 class WorkflowManager extends RelationManager
 {
@@ -22,6 +23,14 @@ class WorkflowManager extends RelationManager
     public WorkflowModel|null $to_add;
     public bool $show_add_status = false;
 
+    public $status;
+
+    public function mount()
+    {
+       $this->status = WorkflowStatus::all();
+    }
+
+
     public static function getTitle(): string
     {
         return __('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.heading');
@@ -34,6 +43,7 @@ class WorkflowManager extends RelationManager
     public function close_add_status()
     {
         $this->show_add_status = false;
+        $this->status = WorkflowStatus::all();
     }
 
     public function add_node(WorkflowModel|null $workflowModel = null)
@@ -54,16 +64,19 @@ class WorkflowManager extends RelationManager
     public function close_workflow_manager_edit_dialog()
     {
         $this->to_edit = null;
+        $this->status = WorkflowStatus::all();
     }
 
     public function close_workflow_manager_add_dialog()
     {
         $this->to_add = null;
+        $this->status = WorkflowStatus::all();
     }
 
     public function close_workflow_manager_delete_dialog()
     {
         $this->to_delete = null;
+        $this->status = WorkflowStatus::all();
     }
 
 }

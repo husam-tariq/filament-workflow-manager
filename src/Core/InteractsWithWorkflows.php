@@ -3,10 +3,12 @@
 namespace Heloufir\FilamentWorkflowManager\Core;
 
 use Heloufir\FilamentWorkflowManager\Models\Workflow;
+use Heloufir\FilamentWorkflowManager\Models\WorkflowHistory;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowModel;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowModelStatus;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowStatus;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 
 trait InteractsWithWorkflows
@@ -49,9 +51,27 @@ trait InteractsWithWorkflows
         return $this->morphOne(WorkflowModelStatus::class, 'modelable');
     }
 
+    public function workflow_history(): MorphMany
+    {
+        return $this->morphMany(WorkflowHistory::class, 'modelable');
+    }
+
+
     public function status()
     {
         return $this->hasOneThrough(WorkflowStatus::class, WorkflowModelStatus::class, "modelable_id", 'id', 'id', 'workflow_status_id');
+    }
+
+    public function allFilters()
+    {
+
+        $workflow = Workflow::where('model', get_class())->first();
+        if ($workflow) {
+            return WorkflowModel::where('workflow_id', $workflow->id)
+                ->get()
+                ->pluck('status_to');
+        }
+        return collect();
     }
 
     public static function allStatus()
