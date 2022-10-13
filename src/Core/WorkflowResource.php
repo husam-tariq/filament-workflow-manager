@@ -14,8 +14,8 @@ trait WorkflowResource
         $this->record->workflow_status->workflow_status_id = $data['workflow_status_id'];
         $this->record->workflow_status->save();
         $this->record->refresh();
-        $this->saveHistory($old_status->id);
-        if ($old_status->id !== $this->record->workflow_status->workflow_status_id) {
+        if ($old_status->id != $this->record->workflow_status->workflow_status_id) {
+            $this->saveHistory($old_status->id);
             $this->emit('WorkflowStatusUpdated', [
                 'type' => 'update',
                 'old_status' => $old_status,
