@@ -11,8 +11,13 @@ class WorkflowStatus extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'workflow_id',
         'name',
         'color',
+        'with_commant',
+        'disable_edit',
+        'disable_options',
+      //  'is_done',
         'is_end'
     ];
 }

@@ -51,6 +51,15 @@ trait InteractsWithWorkflows
         return $this->morphOne(WorkflowModelStatus::class, 'modelable');
     }
 
+    public static function getInputsPermissionsOprions()
+    {
+       $options=[];
+       foreach (static::getInputsPermissions() as $value) {
+        $options[$value]=__($value);
+       }
+       return $options;
+    }
+
     public function workflow_history(): MorphMany
     {
         return $this->morphMany(WorkflowHistory::class, 'modelable');
@@ -58,6 +67,11 @@ trait InteractsWithWorkflows
 
 
     public function status()
+    {
+        return $this->hasOneThrough(WorkflowStatus::class, WorkflowModelStatus::class, "modelable_id", 'id', 'id', 'workflow_status_id');
+    }
+
+    public function workflowStatus()
     {
         return $this->hasOneThrough(WorkflowStatus::class, WorkflowModelStatus::class, "modelable_id", 'id', 'id', 'workflow_status_id');
     }
@@ -72,6 +86,14 @@ trait InteractsWithWorkflows
                 ->pluck('status_to');
         }
         return collect();
+    }
+
+    public static function getRelationships(): array{
+        return [];
+    }
+
+    public static function getInputsPermissions(): array{
+        return array_merge((new (get_class()))->getFillable(),static::getRelationships());
     }
 
     public static function allStatus()
@@ -101,6 +123,11 @@ trait InteractsWithWorkflows
                 'workflow_status_id' => $status->status_to_id
             ]);
         }
+    }
+
+    public static function defaultStatus()
+    {
+        return Workflow::where('model', get_class())->first()->workflow_models->first()->status_to_id;
     }
 
 }
