@@ -101,8 +101,8 @@ trait InteractsWithWorkflows
 
         $workflow = Workflow::where('model', get_class())->first();
         if ($workflow) {
-            return WorkflowModel::where('workflow_id', $workflow->id)
-                ->get()
+            return WorkflowModel::select('workflow_id','status_to_id')->where('workflow_id', $workflow->id)->with('status_to')->get()
+
                 ->pluck('status_to');
         }
         return collect();
@@ -127,7 +127,32 @@ trait InteractsWithWorkflows
 
     public static function defaultStatus()
     {
-        return Workflow::where('model', get_class())->first()->workflow_models->first()->status_to_id;
+        return Workflow::where('model', get_class())->with('workflow_models')->first()->workflow_models->first()->status_to_id;
+    }
+
+    private function saveHistory(int|null $old_status = null): void
+    {
+        WorkflowHistory::create([
+            'old_status_id' => $old_status,
+            'new_status_id' => $this->workflow_status->workflow_status_id,
+            'user_id' => auth()->user()->id,
+            'modelable_type' => get_class(),
+            'modelable_id' => $this->id,
+            'executed_at' => now()
+        ]);
+    }
+
+    public function setStatus(int $status)
+    {
+        $old_status = $this->workflow_status->status;
+        $this->workflow_status->workflow_status_id = $status;
+
+
+            if ($old_status->id != $this->workflow_status->workflow_status_id) {
+                $this->saveHistory($old_status->id);
+            }
+              $this->workflow_status->save();
+            return   $this->refresh();
     }
 
 }

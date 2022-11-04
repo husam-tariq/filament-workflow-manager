@@ -2,6 +2,7 @@
 
 namespace Heloufir\FilamentWorkflowManager\Resources\UserResource;
 
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\BelongsToManyRelationManager;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TagsColumn;
@@ -41,7 +42,9 @@ class WorkflowPermissions extends BelongsToManyRelationManager
                     ->searchable(),
 
                 TagsColumn::make('workflow_models_formatted')
-                    ->label(__('filament-workflow-manager::filament-workflow-manager.resources.permissions.user-relation.table.permission'))
+                    ->label(__('filament-workflow-manager::filament-workflow-manager.resources.permissions.user-relation.table.permission')),
+
+
 
             ])
             ->filters([

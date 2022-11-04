@@ -14,6 +14,7 @@ use Heloufir\FilamentWorkflowManager\Models\Workflow;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowModel;
 use Illuminate\Database\Schema\Builder;
 use Closure;
+use Filament\Forms\Components\Toggle;
 
 class WorkflowPermission extends HasManyRelationManager
 {
@@ -47,7 +48,8 @@ class WorkflowPermission extends HasManyRelationManager
                         CheckboxList::make('workflow_models')
                             ->label(__('filament-workflow-manager::filament-workflow-manager.resources.permissions.table.models'))
                             ->options(fn($livewire) => static::workflow_models($livewire->getOwnerRecord()))
-                            ->required()
+                            ->required(),
+                            Toggle::make('asd'),
                     ])
             ]);
     }
