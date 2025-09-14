@@ -16,7 +16,7 @@ trait WorkflowResource
         $this->record->refresh();
         $this->saveHistory($old_status->id);
         if ($old_status->id !== $this->record->workflow_status->workflow_status_id) {
-            $this->emit('WorkflowStatusUpdated', [
+            $this->dispatch('WorkflowStatusUpdated', [
                 'type' => 'update',
                 'old_status' => $old_status,
                 'new_status' => $this->record->workflow_status->status,
@@ -30,7 +30,7 @@ trait WorkflowResource
     {
         call_user_func($this->getModel() . '::initiate_default_status', $this->record->id);
         $this->saveHistory();
-        $this->emit('WorkflowStatusUpdated', [
+        $this->dispatch('WorkflowStatusUpdated', [
             'type' => 'create',
             'old_status' => null,
             'new_status' => $this->record->workflow_status->workflow_status,
