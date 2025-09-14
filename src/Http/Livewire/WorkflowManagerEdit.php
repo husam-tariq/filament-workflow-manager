@@ -3,10 +3,10 @@
 namespace Heloufir\FilamentWorkflowManager\Http\Livewire;
 
 use Closure;
-use Filament\Facades\Filament;
 use Filament\Forms\Components;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowModel;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowStatus;
 use Illuminate\Database\Schema\Builder;
@@ -53,19 +53,25 @@ class WorkflowManagerEdit extends Component implements HasForms
     {
         $data = $this->form->getState();
         if ($data['is_end'] && WorkflowModel::where('workflow_id', $this->record->workflow->id)->where('status_from_id', $this->record->status_to_id)->count()) {
-            Filament::notify('warning', __('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.modal.edit.messages.cannot_end_workflow'));
+            Notification::make()
+                ->warning()
+                ->title(__('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.modal.edit.messages.cannot_end_workflow'))
+                ->send();
         } else {
             $this->record->status_to->name = $data['name'];
             $this->record->status_to->color = $data['color'];
             $this->record->status_to->is_end = $data['is_end'];
             $this->record->status_to->save();
-            Filament::notify('success', __('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.modal.edit.messages.submitted'));
-            $this->emit('close_workflow_manager_edit_dialog');
+            Notification::make()
+                ->success()
+                ->title(__('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.modal.edit.messages.submitted'))
+                ->send();
+            $this->dispatch('close_workflow_manager_edit_dialog');
         }
     }
 
     public function cancel()
     {
-        $this->emit('close_workflow_manager_edit_dialog');
+        $this->dispatch('close_workflow_manager_edit_dialog');
     }
 }

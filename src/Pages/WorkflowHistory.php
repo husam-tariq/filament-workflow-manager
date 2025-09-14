@@ -8,6 +8,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\MultiSelectFilter;
+use Filament\Tables\Table;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowHistory as WorkflowHistoryModel;
@@ -49,6 +50,15 @@ class WorkflowHistory extends Page implements HasTable
     {
         $this->modelable_id = $id;
         $this->modelable_type = $model;
+    }
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->query($this->getTableQuery())
+            ->columns($this->getTableColumns())
+            ->filters($this->getTableFilters())
+            ->defaultSort('executed_at', 'desc');
     }
 
     protected function getTableQuery(): Builder
@@ -99,15 +109,5 @@ class WorkflowHistory extends Page implements HasTable
                     return $query;
                 })
         ];
-    }
-
-    protected function getDefaultTableSortColumn(): ?string
-    {
-        return 'executed_at';
-    }
-
-    protected function getDefaultTableSortDirection(): ?string
-    {
-        return 'desc';
     }
 }

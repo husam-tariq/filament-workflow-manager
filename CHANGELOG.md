@@ -2,6 +2,34 @@
 
 All notable changes to `filament-workflow-manager` will be documented in this file.
 
+## 2.0.0 - 2024
+
+### Breaking Changes
+- **Filament v3 Compatibility**: Updated package to support Filament v3
+- **Plugin Registration**: Changed from automatic resource registration to plugin-based registration
+- **API Changes**: Updated all classes to use Filament v3 API patterns
+
+### Changes
+- Updated composer dependency from `filament/filament: ^2.13` to `filament/filament: ^3.0`
+- Replaced `PluginServiceProvider` with `PackageServiceProvider` and created dedicated `FilamentWorkflowManagerPlugin`
+- Updated resource form/table method signatures for v3 compatibility
+- Changed page action methods from `getActions()` to `getHeaderActions()`
+- Updated Livewire components to use new notification API (`Notification::make()` instead of `Filament::notify()`)
+- Changed event emission from `$this->emit()` to `$this->dispatch()`
+- Updated relation managers to extend `RelationManager` instead of specific typed managers
+- Replaced deprecated `Card` component with `Section` component
+- Updated icon from `heroicon-o-collection` to `heroicon-o-rectangle-stack`
+
+### Migration Guide
+1. Update your composer requirement to use version `^2.0`
+2. Add the plugin to your Filament panel provider:
+   ```php
+   ->plugins([
+       FilamentWorkflowManagerPlugin::make(),
+   ])
+   ```
+3. Remove the old resources/pages configuration from your panel provider if you were manually registering them
+
 ## 1.1.8 - 2022-07-07
 
 - Permisions

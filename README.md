@@ -5,6 +5,8 @@
 
 This package provides a Filament resource where you can configure and manage your workflows, and also provides some functions, helpers, traits, ... to help you attach statuses to your configured models.
 
+> **Note**: This package has been upgraded to support Filament v3. For Filament v2 compatibility, please use version 1.x of this package.
+
 ![Filament Workflow Manager](filament-workflow-manager-demo.jpg)
 
 
@@ -26,6 +28,22 @@ php artisan vendor:publish --tag="filament-workflow-manager-migrations"
 **Config file**
 ```bash
 php artisan vendor:publish --tag="filament-workflow-manager-config"
+```
+
+**Register the plugin** (Filament v3)
+Add the plugin to your panel provider (e.g., `app/Providers/Filament/AdminPanelProvider.php`):
+
+```php
+use Heloufir\FilamentWorkflowManager\FilamentWorkflowManagerPlugin;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        // ...
+        ->plugins([
+            FilamentWorkflowManagerPlugin::make(),
+        ]);
+}
 ```
 
 ## Quick start
