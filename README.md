@@ -5,6 +5,8 @@
 
 This package provides a Filament resource where you can configure and manage your workflows, and also provides some functions, helpers, traits, ... to help you attach statuses to your configured models.
 
+**✨ Now compatible with Filament v3!** ✨
+
 ![Filament Workflow Manager](filament-workflow-manager-demo.jpg)
 
 
@@ -14,6 +16,31 @@ You can install the package via composer:
 
 ```bash
 composer require heloufir/filament-workflow-manager
+```
+
+## Requirements
+
+- **Filament v3** - This package requires Filament v3.0 or higher
+- PHP 8.0+
+- Laravel 10.0+
+
+## Setup
+
+After installing the package, you need to register the plugin with your Filament panel in your `app/Providers/Filament/AdminPanelProvider.php`:
+
+```php
+use Heloufir\FilamentWorkflowManager\FilamentWorkflowManagerPlugin;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        ->default()
+        ->id('admin')
+        ->path('admin')
+        ->plugins([
+            FilamentWorkflowManagerPlugin::make(),
+        ]);
+}
 ```
 
 The package comes with publishable assets:

@@ -7,7 +7,8 @@ use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Filters\MultiSelectFilter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowHistory as WorkflowHistoryModel;
@@ -59,55 +60,44 @@ class WorkflowHistory extends Page implements HasTable
         return $query;
     }
 
-    protected function getTableColumns(): array
+    public function table(Table $table): Table
     {
-        return [
-            TextColumn::make('old_status.name')
-                ->label(trans('filament-workflow-manager::filament-workflow-manager.page.history.table.old_status'))
-                ->searchable()
-                ->sortable(),
+        return $table
+            ->query($this->getTableQuery())
+            ->columns([
+                TextColumn::make('old_status.name')
+                    ->label(trans('filament-workflow-manager::filament-workflow-manager.page.history.table.old_status'))
+                    ->searchable()
+                    ->sortable(),
 
-            TextColumn::make('new_status.name')
-                ->label(trans('filament-workflow-manager::filament-workflow-manager.page.history.table.new_status'))
-                ->searchable()
-                ->sortable(),
+                TextColumn::make('new_status.name')
+                    ->label(trans('filament-workflow-manager::filament-workflow-manager.page.history.table.new_status'))
+                    ->searchable()
+                    ->sortable(),
 
-            TextColumn::make('user.' . config('filament-workflow-manager.user_name'))
-                ->label(trans('filament-workflow-manager::filament-workflow-manager.page.history.table.changed_by'))
-                ->searchable()
-                ->sortable(),
+                TextColumn::make('user.' . config('filament-workflow-manager.user_name'))
+                    ->label(trans('filament-workflow-manager::filament-workflow-manager.page.history.table.changed_by'))
+                    ->searchable()
+                    ->sortable(),
 
-            TextColumn::make('executed_at')
-                ->label(trans('filament-workflow-manager::filament-workflow-manager.page.history.table.changed_at'))
-                ->searchable()
-                ->sortable()
-                ->dateTime(trans('filament-workflow-manager::filament-workflow-manager.page.history.data.date_format')),
-        ];
-    }
-
-    protected function getTableFilters(): array
-    {
-        return [
-            MultiSelectFilter::make('statuses')
-                ->label(trans('filament-workflow-manager::filament-workflow-manager.page.history.table.filter.statuses'))
-                ->options(WorkflowStatus::all()->pluck('name', 'id')->toArray())
-                ->query(function (Builder $query, array $state) {
-                    if (isset($state['values']) && sizeof($state['values'])) {
-                        $query->whereIn('old_status_id', $state['values'])
-                            ->orWhereIn('new_status_id', $state['values']);
-                    }
-                    return $query;
-                })
-        ];
-    }
-
-    protected function getDefaultTableSortColumn(): ?string
-    {
-        return 'executed_at';
-    }
-
-    protected function getDefaultTableSortDirection(): ?string
-    {
-        return 'desc';
+                TextColumn::make('executed_at')
+                    ->label(trans('filament-workflow-manager::filament-workflow-manager.page.history.table.changed_at'))
+                    ->searchable()
+                    ->sortable()
+                    ->dateTime(trans('filament-workflow-manager::filament-workflow-manager.page.history.data.date_format')),
+            ])
+            ->filters([
+                SelectFilter::make('statuses')
+                    ->label(trans('filament-workflow-manager::filament-workflow-manager.page.history.table.filter.statuses'))
+                    ->options(WorkflowStatus::all()->pluck('name', 'id')->toArray())
+                    ->query(function (Builder $query, array $state) {
+                        if (isset($state['value']) && $state['value']) {
+                            $query->where('old_status_id', $state['value'])
+                                ->orWhere('new_status_id', $state['value']);
+                        }
+                        return $query;
+                    }),
+            ])
+            ->defaultSort('executed_at', 'desc');
     }
 }

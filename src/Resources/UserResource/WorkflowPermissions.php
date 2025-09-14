@@ -2,19 +2,17 @@
 
 namespace Heloufir\FilamentWorkflowManager\Resources\UserResource;
 
-use Filament\Resources\RelationManagers\BelongsToManyRelationManager;
-use Filament\Resources\Table;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables\Table;
 use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 
-class WorkflowPermissions extends BelongsToManyRelationManager
+class WorkflowPermissions extends RelationManager
 {
     protected static string $relationship = 'workflow_permissions';
 
     protected static ?string $recordTitleAttribute = 'role';
-
-    protected static bool $shouldPreloadAttachFormRecordSelectOptions = true;
 
     public static function getTitle(): string
     {
@@ -26,17 +24,15 @@ class WorkflowPermissions extends BelongsToManyRelationManager
         return __('filament-workflow-manager::filament-workflow-manager.resources.permissions.user-relation.label');
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::
-                make('workflow.name')
+                TextColumn::make('workflow.name')
                     ->label(__('filament-workflow-manager::filament-workflow-manager.resources.permissions.user-relation.table.workflow'))
                     ->searchable(),
 
-                TextColumn::
-                make('role')
+                TextColumn::make('role')
                     ->label(__('filament-workflow-manager::filament-workflow-manager.resources.permissions.user-relation.table.permission'))
                     ->searchable(),
 

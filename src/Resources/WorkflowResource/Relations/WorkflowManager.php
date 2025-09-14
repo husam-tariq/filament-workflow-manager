@@ -2,7 +2,9 @@
 
 namespace Heloufir\FilamentWorkflowManager\Resources\WorkflowResource\Relations;
 
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables\Table;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowModel;
 
 class WorkflowManager extends RelationManager
@@ -64,6 +66,18 @@ class WorkflowManager extends RelationManager
     public function close_workflow_manager_delete_dialog()
     {
         $this->to_delete = null;
+    }
+
+    public function form(Form $form): Form
+    {
+        // This relation manager uses custom Livewire components for form handling
+        return $form->schema([]);
+    }
+
+    public function table(Table $table): Table
+    {
+        // This relation manager uses a custom view for table display
+        return $table->columns([]);
     }
 
 }

@@ -3,13 +3,11 @@
 namespace Heloufir\FilamentWorkflowManager\Resources;
 
 use Heloufir\FilamentWorkflowManager\Core\WorkflowHelper;
-use Filament\Forms\Components;
-use Filament\Resources\Form;
+use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Heloufir\FilamentWorkflowManager\Models\Workflow;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Builder;
@@ -21,19 +19,25 @@ class WorkflowResource extends Resource
 
     protected static ?string $model = Workflow::class;
 
-    protected static function getNavigationIcon(): string
+    protected static ?string $navigationIcon = null;
+    
+    protected static ?string $navigationGroup = null;
+    
+    protected static ?int $navigationSort = null;
+
+    public static function getNavigationIcon(): string
     {
         return config('filament-workflow-manager.navigation_icon') ?? 'heroicon-o-collection';
     }
 
-    protected static function getNavigationGroup(): ?string
+    public static function getNavigationGroup(): ?string
     {
-        return config('filament-workflow-manager.navigation_group');
+        return config('filament-workflow-manager.navigation_group') ?? 'Settings';
     }
 
-    protected static function getNavigationSort(): ?int
+    public static function getNavigationSort(): ?int
     {
-        return config('filament-workflow-manager.navigation_sort');
+        return config('filament-workflow-manager.navigation_sort') ?? 1;
     }
 
     protected static function getNavigationLabel(): string
@@ -45,20 +49,21 @@ class WorkflowResource extends Resource
     {
         return $form
             ->schema([
-                Components\Card::make([
-                    // NAME
-                    Components\TextInput::make('name')
-                        ->label(trans('filament-workflow-manager::filament-workflow-manager.resources.workflow.table.name'))
-                        ->required()
-                        ->maxLength(Builder::$defaultStringLength),
+                Forms\Components\Section::make()
+                    ->schema([
+                        // NAME
+                        Forms\Components\TextInput::make('name')
+                            ->label(trans('filament-workflow-manager::filament-workflow-manager.resources.workflow.table.name'))
+                            ->required()
+                            ->maxLength(Builder::$defaultStringLength),
 
-                    // MODEL
-                    Components\Select::make('model')
-                        ->label(trans('filament-workflow-manager::filament-workflow-manager.resources.workflow.table.model'))
-                        ->required()
-                        ->rule(fn(?Model $record) => 'unique:workflows,model,' . ($record?->id ?? 'NULL') . ',id,deleted_at,NULL')
-                        ->options(self::get_workflow_models_options())
-                ]),
+                        // MODEL
+                        Forms\Components\Select::make('model')
+                            ->label(trans('filament-workflow-manager::filament-workflow-manager.resources.workflow.table.model'))
+                            ->required()
+                            ->rule(fn(?Model $record) => 'unique:workflows,model,' . ($record?->id ?? 'NULL') . ',id,deleted_at,NULL')
+                            ->options(self::get_workflow_models_options())
+                    ]),
             ]);
     }
 
@@ -66,12 +71,12 @@ class WorkflowResource extends Resource
     {
         return $table
             ->columns([
-                Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')
                     ->label(trans('filament-workflow-manager::filament-workflow-manager.resources.workflow.table.name'))
                     ->sortable()
                     ->searchable(),
 
-                Columns\TextColumn::make('model')
+                Tables\Columns\TextColumn::make('model')
                     ->label(trans('filament-workflow-manager::filament-workflow-manager.resources.workflow.table.model'))
                     ->sortable()
                     ->formatStateUsing(fn (string $state) => (new $state)->workflow_model_name())
@@ -81,10 +86,12 @@ class WorkflowResource extends Resource
                 //
             ])
             ->actions([
-                EditAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                DeleteBulkAction::make(),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

@@ -2,7 +2,7 @@
 
 namespace Heloufir\FilamentWorkflowManager\Http\Livewire;
 
-use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
 use Filament\Forms\Components;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -64,20 +64,26 @@ class WorkflowManagerAdd extends Component implements HasForms
     {
         $data = $this->form->getState();
         if (WorkflowModel::where('workflow_id', $this->workflow->id)->where('status_from_id', $data['status_from_id'])->where('status_to_id', $data['status_to_id'])->count()) {
-            Filament::notify('warning', __('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.modal.add.messages.duplicated'));
+            Notification::make()
+                ->warning()
+                ->title(__('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.modal.add.messages.duplicated'))
+                ->send();
         } else {
             $model = new WorkflowModel();
             $model->workflow_id = $this->workflow->id;
             $model->status_from_id = $data['status_from_id'];
             $model->status_to_id = $data['status_to_id'];
             $model->save();
-            Filament::notify('success', __('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.modal.add.messages.submitted'));
-            $this->emit('close_workflow_manager_add_dialog');
+            Notification::make()
+                ->success()
+                ->title(__('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.modal.add.messages.submitted'))
+                ->send();
+            $this->dispatch('close_workflow_manager_add_dialog');
         }
     }
 
     public function cancel()
     {
-        $this->emit('close_workflow_manager_add_dialog');
+        $this->dispatch('close_workflow_manager_add_dialog');
     }
 }

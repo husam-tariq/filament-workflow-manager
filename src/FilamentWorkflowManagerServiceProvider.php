@@ -6,12 +6,12 @@ use Heloufir\FilamentWorkflowManager\Http\Livewire\WorkflowManagerAdd;
 use Heloufir\FilamentWorkflowManager\Http\Livewire\WorkflowManagerAddStatus;
 use Heloufir\FilamentWorkflowManager\Http\Livewire\WorkflowManagerDelete;
 use Heloufir\FilamentWorkflowManager\Http\Livewire\WorkflowManagerEdit;
-use Filament\PluginServiceProvider;
 use Heloufir\FilamentWorkflowManager\Resources\UserResource\WorkflowPermissions;
 use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Livewire\Livewire;
 
-class FilamentWorkflowManagerServiceProvider extends PluginServiceProvider
+class FilamentWorkflowManagerServiceProvider extends PackageServiceProvider
 {
 
     public function configurePackage(Package $package): void
@@ -61,22 +61,4 @@ class FilamentWorkflowManagerServiceProvider extends PluginServiceProvider
             Livewire::component($component::getName(), $component);
         }
     }
-
-    protected function getResources(): array
-    {
-        return config('filament-workflow-manager.resources');
-    }
-
-    protected function getPages(): array
-    {
-        return config('filament-workflow-manager.pages');
-    }
-
-    protected function getStyles(): array
-    {
-        return array_merge([
-            __DIR__ . '/../dist/app.css'
-        ], config('filament-workflow-manager.styles'));
-    }
-
 }

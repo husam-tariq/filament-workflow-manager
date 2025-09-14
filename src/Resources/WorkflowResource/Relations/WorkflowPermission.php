@@ -2,20 +2,17 @@
 
 namespace Heloufir\FilamentWorkflowManager\Resources\WorkflowResource\Relations;
 
-use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\TextInput;
-use Filament\Resources\RelationManagers\HasManyRelationManager;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
-use Filament\Tables\Columns\TagsColumn;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Heloufir\FilamentWorkflowManager\Models\Workflow;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowModel;
 use Illuminate\Database\Schema\Builder;
 use Closure;
 
-class WorkflowPermission extends HasManyRelationManager
+class WorkflowPermission extends RelationManager
 {
     protected static string $view = 'filament-workflow-manager::filament.resources.workflow-resource.pages.workflow-permission';
 
@@ -33,18 +30,18 @@ class WorkflowPermission extends HasManyRelationManager
         return __('filament-workflow-manager::filament-workflow-manager.resources.permissions.model');
     }
 
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Grid::make(1)
+                Forms\Components\Grid::make(1)
                     ->schema([
-                        TextInput::make('role')
+                        Forms\Components\TextInput::make('role')
                             ->label(__('filament-workflow-manager::filament-workflow-manager.resources.permissions.table.role'))
                             ->maxLength(Builder::$defaultStringLength)
                             ->required(),
 
-                        CheckboxList::make('workflow_models')
+                        Forms\Components\CheckboxList::make('workflow_models')
                             ->label(__('filament-workflow-manager::filament-workflow-manager.resources.permissions.table.models'))
                             ->options(fn($livewire) => static::workflow_models($livewire->getOwnerRecord()))
                             ->required()
@@ -70,17 +67,32 @@ class WorkflowPermission extends HasManyRelationManager
         return $data;
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('role')
+                Tables\Columns\TextColumn::make('role')
                     ->label(__('filament-workflow-manager::filament-workflow-manager.resources.permissions.table.role'))
                     ->sortable()
                     ->searchable(),
 
-                TagsColumn::make('workflow_models_formatted')
+                Tables\Columns\TagsColumn::make('workflow_models_formatted')
                     ->label(__('filament-workflow-manager::filament-workflow-manager.resources.permissions.table.models'))
+            ])
+            ->filters([
+                //
+            ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

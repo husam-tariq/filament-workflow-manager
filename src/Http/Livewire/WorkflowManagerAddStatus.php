@@ -2,7 +2,7 @@
 
 namespace Heloufir\FilamentWorkflowManager\Http\Livewire;
 
-use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
 use Filament\Forms\Components;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -59,12 +59,15 @@ class WorkflowManagerAddStatus extends Component implements HasForms
         $model->color = $data['color'];
         $model->is_end = $data['is_end'];
         $model->save();
-        Filament::notify('success', __('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.modal.add_status.messages.submitted'));
-        $this->emit('close_add_status');
+        Notification::make()
+            ->success()
+            ->title(__('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.modal.add_status.messages.submitted'))
+            ->send();
+        $this->dispatch('close_add_status');
     }
 
     public function cancel()
     {
-        $this->emit('close_add_status');
+        $this->dispatch('close_add_status');
     }
 }
