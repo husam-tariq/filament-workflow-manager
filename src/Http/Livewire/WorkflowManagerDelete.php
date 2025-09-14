@@ -2,7 +2,7 @@
 
 namespace Heloufir\FilamentWorkflowManager\Http\Livewire;
 
-use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
 use Heloufir\FilamentWorkflowManager\Models\WorkflowModel;
 use Livewire\Component;
 
@@ -19,12 +19,15 @@ class WorkflowManagerDelete extends Component
     public function submit()
     {
         $this->record->delete();
-        Filament::notify('success', __('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.modal.delete.messages.deleted'));
-        $this->emit('close_workflow_manager_delete_dialog');
+        Notification::make()
+            ->success()
+            ->title(__('filament-workflow-manager::filament-workflow-manager.resources.workflow.page.workflow.modal.delete.messages.deleted'))
+            ->send();
+        $this->dispatch('close_workflow_manager_delete_dialog');
     }
 
     public function cancel()
     {
-        $this->emit('close_workflow_manager_delete_dialog');
+        $this->dispatch('close_workflow_manager_delete_dialog');
     }
 }
