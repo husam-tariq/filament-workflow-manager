@@ -16,11 +16,15 @@ class FilamentWorkflowManagerPlugin implements Plugin
     {
         $panel
             ->resources(config('filament-workflow-manager.resources', []))
-            ->pages(config('filament-workflow-manager.pages', []))
-            ->renderHook(
-                'panels::styles.after',
-                fn () => '<link rel="stylesheet" href="' . asset('css/filament-workflow-manager.css') . '">'
-            );
+            ->pages(config('filament-workflow-manager.pages', []));
+            
+        // Add custom styles if configured
+        $styles = config('filament-workflow-manager.styles', []);
+        if (!empty($styles)) {
+            foreach ($styles as $style) {
+                $panel->viteTheme($style);
+            }
+        }
     }
 
     public function boot(Panel $panel): void

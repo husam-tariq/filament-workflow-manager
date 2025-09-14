@@ -2,6 +2,26 @@
 
 All notable changes to `filament-workflow-manager` will be documented in this file.
 
+## 2.0.0 - 2024-XX-XX
+
+### Major Changes
+- **BREAKING**: Updated to support Filament v3
+- **BREAKING**: Requires PHP 8.0+ and Laravel 10.0+
+- **BREAKING**: Changed plugin registration method - now requires `FilamentWorkflowManagerPlugin::make()` in panel provider
+
+### Migrated Components
+- Updated ServiceProvider to use Plugin pattern instead of PluginServiceProvider
+- Migrated all form and table components to v3 syntax
+- Updated resource pages to use new header actions pattern
+- Updated Livewire components for v3 notification and event dispatching
+- Updated relation managers to use new v3 interfaces
+- Updated custom pages to use new table builder pattern
+
+### Enhanced Features
+- Improved plugin configuration system
+- Better integration with Filament v3 panel system
+- Updated documentation with v3 requirements and setup instructions
+
 ## 1.1.8 - 2022-07-07
 
 - Permisions

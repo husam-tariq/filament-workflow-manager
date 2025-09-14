@@ -27,7 +27,7 @@ class WorkflowResource extends Resource
 
     public static function getNavigationIcon(): string
     {
-        return config('filament-workflow-manager.navigation_icon') ?? 'heroicon-o-collection';
+        return config('filament-workflow-manager.navigation_icon') ?? 'heroicon-o-rectangle-stack';
     }
 
     public static function getNavigationGroup(): ?string

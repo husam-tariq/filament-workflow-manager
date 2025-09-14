@@ -66,11 +66,11 @@ return [
     |  Navigation Icon
     |--------------------------------------------------------------------------
     |
-    | This is the configuration for the navigation icon class (by default "heroicon-o-collection")
+    | This is the configuration for the navigation icon class (by default "heroicon-o-rectangle-stack")
     |
     */
 
-    'navigation_icon' => 'heroicon-o-collection',
+    'navigation_icon' => 'heroicon-o-rectangle-stack',
 
     /*
     |--------------------------------------------------------------------------
